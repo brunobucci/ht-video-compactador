@@ -3,8 +3,6 @@ package com.br.fiap.postech.ht_video_compactador.application.usecase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +33,7 @@ class CompactarPastaTest {
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
-		videoDto = new VideoDto("123456", "nome-do-video.mp4", StatusEdicao.COMPACTADA);
+		videoDto = new VideoDto("111", "123456", "nome-do-video.mp4", StatusEdicao.COMPACTADA);
 	}
 
 	@Test
@@ -58,7 +56,7 @@ class CompactarPastaTest {
 		String caminhoDaPastaDeFrames = "/Users/marceloquevedo/Desktop/pos/hack/teste/";
 		compactarPasta.caminhoDaPastaDeFrames = caminhoDaPastaDeFrames;
 	
-		doThrow(new RuntimeException("Erro ao compactar")).when(compactacaoQueueAdapterOUT).publishVideoCompactado(anyString());
+		doThrow(new RuntimeException("Erro ao compactar")).when(compactacaoQueueAdapterOUT).publishVideoComErro(anyString());
 	
 		// Act
 		compactarPasta.executar(videoDto);

@@ -36,37 +36,50 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
 	@Override
 	public void executar(VideoDto videoDto) {
+		
+		boolean compactaOk = false;
 		try {
 			logger.info("Iniciou processo de compactação de pasta.");
 
-			compactaDiretorioDosFrames(caminhoDaPastaDeFrames + videoDto.getCodigoEdicao());
-			
-			videoDto.setStatusEdicao(StatusEdicao.COMPACTADA);
-			compactacaoQueueAdapterOUT.publishVideoCompactado(toVideoMessage(videoDto));
-			
-			logger.info("Finalizou processo de compactação de pasta.");
+			compactaOk = compactaDiretorioDosFrames(caminhoDaPastaDeFrames + videoDto.getCodigoEdicao());
+			if(compactaOk) {
+				compactacaoQueueAdapterOUT.publishVideoProcessado(toVideoMessage(videoDto, true));
+				logger.info("Finalizou processo de compactação de pasta.");
+			}
+			else {
+				compactacaoQueueAdapterOUT.publishVideoProcessado(toVideoMessage(videoDto, false));
+				compactacaoQueueAdapterOUT.publishVideoComErro(toVideoMessage(videoDto, false));
+				logger.error("Video publicado nas filas videos_processados e videos_com_notificacao com erro,");
+			}
 		}
 		catch(Exception ex) {
-			compactacaoQueueAdapterOUT.publishVideoComErro(toVideoMessage(videoDto));
-			logger.error("Video publicado na fila videos_com_erro: ", ex);
+			logger.error("Video publicado nas filas videos_processados e videos_com_notificacao com erro: ", ex);
 		}		
 	}
 
 	@SuppressWarnings({ "resource" }) 
-	void compactaDiretorioDosFrames(String diretorio) {
+	boolean compactaDiretorioDosFrames(String diretorio) {
 		try {
 			new ZipFile(diretorio+".zip").addFolder(new File(diretorio));
+			return true;
 		} catch (ZipException e) {
 			logger.error("Video publicado na fila videos_com_erro: ", e);
 			e.printStackTrace();
+			return false;
 		}	
 	}
 
-	private String toVideoMessage(VideoDto video){
-        HashMap<Object, Object> message = new HashMap<Object, Object>();
+	private String toVideoMessage(VideoDto video, boolean sucesso){
+        HashMap<Object, Object> message = new HashMap<>();
+        message.put("id",video.getId());
         message.put("nomeVideo",video.getNome());
-        message.put("codigoEdicao",video.getCodigoEdicao().toString());
-        message.put("statusEdicao",StatusEdicao.FINALIZADA);
+        message.put("codigoEdicao",video.getCodigoEdicao());
+        if(sucesso) {
+        	message.put("statusEdicao",StatusEdicao.FINALIZADA);
+        }
+        else {
+        	message.put("statusEdicao",StatusEdicao.COM_ERRO);
+        }
         return gson.toJson(message);
     }
 	

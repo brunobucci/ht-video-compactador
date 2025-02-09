@@ -28,7 +28,7 @@ class CompactacaoQueueAdapterOUTTest {
     @BeforeEach
     public void setUp() {
         // Configurando o valor da fila para o teste
-        compactacaoQueueAdapterOUT.filaVideosCompactados = "testQueue";
+        compactacaoQueueAdapterOUT.filaVideosProcessados = "testQueue";
     }
 
     @Test
@@ -40,7 +40,7 @@ class CompactacaoQueueAdapterOUTTest {
         doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString());
         
         // Chama o método a ser testado
-        compactacaoQueueAdapterOUT.publishVideoCompactado(videoJson);
+        compactacaoQueueAdapterOUT.publishVideoProcessado(videoJson);
 
         // Então, verifica se o método convertAndSend foi chamado com os parâmetros corretos
         verify(rabbitTemplate).convertAndSend("testQueue", videoJson);

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class CompactacaoQueueAdapterINTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        videoDto = new VideoDto("123", "video.mp4", StatusEdicao.CRIADA);
+        videoDto = new VideoDto("111", "123", "video.mp4", StatusEdicao.CRIADA);
     }
 
 	@Test
@@ -63,7 +64,7 @@ class CompactacaoQueueAdapterINTest {
 	@Test
     void testFromMessageToDto() {
         // Arrange
-        HashMap<Object, Object> mensagem = new HashMap<>();
+        Map<String, String> mensagem = new HashMap<>();
         mensagem.put("codigoEdicao", "123");
         mensagem.put("nomeVideo", "video.mp4");
 
