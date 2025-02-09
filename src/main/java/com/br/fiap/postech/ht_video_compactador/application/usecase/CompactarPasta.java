@@ -2,7 +2,6 @@ package com.br.fiap.postech.ht_video_compactador.application.usecase;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +28,7 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private Gson gson;
     
-    @Value("${caminhoDaPastaDeFrames}")
-    private String caminhoDaPastaDeFrames;
+    @Value("${caminhoDaPastaDeFrames}") String caminhoDaPastaDeFrames;
     
     public CompactarPasta(ICompactacaoQueueAdapterOUT compactacaoQueueAdapterOUT) {
         this.compactacaoQueueAdapterOUT = compactacaoQueueAdapterOUT;
@@ -49,14 +47,13 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
 			logger.info("Finalizou processo de compactação de pasta.");
 		}
 		catch(Exception ex) {
-			//TODO - Publicar na fila de video com erro
-			//extracaoQueueAdapterOUT.publishVideoProcessado(toVideoMessage(videoDto));
+			compactacaoQueueAdapterOUT.publishVideoComErro(toVideoMessage(videoDto));
 			logger.error("Video publicado na fila videos_com_erro: ", ex);
 		}		
 	}
 
-	@SuppressWarnings({ "resource" })
-	private void compactaDiretorioDosFrames(String diretorio) {
+	@SuppressWarnings({ "resource" }) 
+	void compactaDiretorioDosFrames(String diretorio) {
 		try {
 			new ZipFile(diretorio+".zip").addFolder(new File(diretorio));
 		} catch (ZipException e) {
@@ -66,7 +63,7 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 	private String toVideoMessage(VideoDto video){
-        Map message = new HashMap<String, String>();
+        HashMap<Object, Object> message = new HashMap<Object, Object>();
         message.put("nomeVideo",video.getNome());
         message.put("codigoEdicao",video.getCodigoEdicao().toString());
         message.put("statusEdicao",StatusEdicao.FINALIZADA);

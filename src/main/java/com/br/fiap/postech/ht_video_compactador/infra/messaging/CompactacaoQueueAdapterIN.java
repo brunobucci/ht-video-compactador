@@ -40,7 +40,7 @@ public class CompactacaoQueueAdapterIN implements ICompactacaoQueueAdapterIN{
 		
 	}
 	
-	private static VideoDto fromMessageToDto(Map mensagem) {
+	static VideoDto fromMessageToDto(Map mensagem) {
 		return new VideoDto(
 				(String) mensagem.get("codigoEdicao"),
 				(String) mensagem.get("nomeVideo"), 
