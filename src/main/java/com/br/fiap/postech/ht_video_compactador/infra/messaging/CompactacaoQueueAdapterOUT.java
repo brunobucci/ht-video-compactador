@@ -14,15 +14,24 @@ public class CompactacaoQueueAdapterOUT implements ICompactacaoQueueAdapterOUT{
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Value("${queue2.name}")
-	private String filaVideosCompactados;
+	@Value("${queue2.name}") 
+	String filaVideosProcessados;
+	
+	@Value("${queue3.name}") 
+	String filaVideosComErro;
 	
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	
 	@Override
-	public void publishVideoCompactado(String videoJson) {
-		rabbitTemplate.convertAndSend(filaVideosCompactados, videoJson);
-		logger.info("Publicação na fila VideosCompactados executada.");
+	public void publishVideoProcessado(String videoJson) {
+		rabbitTemplate.convertAndSend(filaVideosProcessados, videoJson);
+		logger.info("Publicação na fila videos_processados executada.");
+	}
+
+	@Override
+	public void publishVideoComErro(String videoJson) {
+		rabbitTemplate.convertAndSend(filaVideosComErro, videoJson);
+		logger.info("Publicação na fila videos_com_notificacao executada.");
 	}
 }
