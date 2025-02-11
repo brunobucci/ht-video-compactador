@@ -37,7 +37,7 @@ class CompactacaoQueueAdapterINTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        videoDto = new VideoDto("111", "123", "video.mp4", StatusEdicao.CRIADA);
+        videoDto = new VideoDto("111", "123", "video.mp4", "1", StatusEdicao.CRIADA);
     }
 
 	@Test

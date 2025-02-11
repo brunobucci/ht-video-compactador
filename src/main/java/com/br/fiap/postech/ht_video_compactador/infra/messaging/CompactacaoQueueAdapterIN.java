@@ -44,7 +44,8 @@ public class CompactacaoQueueAdapterIN implements ICompactacaoQueueAdapterIN{
 		return new VideoDto(
 				mensagem.get("id"),
 				mensagem.get("codigoEdicao"),
-				mensagem.get("nomeVideo"), 
+				mensagem.get("nomeVideo"),
+				mensagem.get("tentativasDeEdicao"),
 				null);
 	}
 }

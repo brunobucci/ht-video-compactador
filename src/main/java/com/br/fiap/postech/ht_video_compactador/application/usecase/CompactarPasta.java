@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +20,12 @@ import net.lingala.zip4j.exception.ZipException;
 @Service
 public class CompactarPasta implements ICompactarPastaUsecase{
 
-private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
     private final ICompactacaoQueueAdapterOUT compactacaoQueueAdapterOUT;
 
-    @Autowired
-    private Gson gson;
-    
-    @Value("${caminhoDaPastaDeFrames}") String caminhoDaPastaDeFrames;
+    @Value("${caminhoDaPastaDeFrames}") 
+    String caminhoDaPastaDeFrames;
     
     public CompactarPasta(ICompactacaoQueueAdapterOUT compactacaoQueueAdapterOUT) {
         this.compactacaoQueueAdapterOUT = compactacaoQueueAdapterOUT;
@@ -58,7 +55,7 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 	@SuppressWarnings({ "resource" }) 
-	boolean compactaDiretorioDosFrames(String diretorio) {
+	public boolean compactaDiretorioDosFrames(String diretorio) {
 		try {
 			new ZipFile(diretorio+".zip").addFolder(new File(diretorio));
 			return true;
@@ -69,18 +66,19 @@ private final Logger logger = LoggerFactory.getLogger(this.getClass());
 		}	
 	}
 
-	private String toVideoMessage(VideoDto video, boolean sucesso){
+	public String toVideoMessage(VideoDto video, boolean sucesso){
         HashMap<Object, Object> message = new HashMap<>();
         message.put("id",video.getId());
         message.put("nomeVideo",video.getNome());
         message.put("codigoEdicao",video.getCodigoEdicao());
+        message.put("tentativasDeEdicao",video.getTentativasDeEdicao());
         if(sucesso) {
         	message.put("statusEdicao",StatusEdicao.FINALIZADA);
         }
         else {
         	message.put("statusEdicao",StatusEdicao.COM_ERRO);
         }
-        return gson.toJson(message);
+        return new Gson().toJson(message);
     }
 	
 }
